@@ -11,10 +11,20 @@ return {
   },
   cmd = 'Neotree',
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true, mode = 'n' },
   },
   opts = {
+    window = {
+      width = 35,
+    },
+    default_component_configs = {
+      indent = {
+        with_markers = true,
+        padding = 0,
+      },
+    },
     filesystem = {
+      group_empty_dirs = true,
       window = {
         mappings = {
           ['\\'] = 'close_window',

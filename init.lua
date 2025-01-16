@@ -20,18 +20,6 @@
 =====================================================================
 =====================================================================
 
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
     If you don't know anything about Lua, I recommend taking some time to read through
     a guide. One possible example which will only take 10-15 minutes:
       - https://learnxinyminutes.com/docs/lua/
@@ -45,24 +33,6 @@ Kickstart Guide:
 
   TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
 
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
     MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
     which is very useful when you're not exactly sure of what you're looking for.
 
@@ -72,17 +42,18 @@ Kickstart Guide:
 
    NOTE: Look for lines like this
 
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
 If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
 
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+
+-- Custom changes
+
+local key_up = 'k'
+local key_down = 'j'
+local key_left = 'h'
+local key_right = 'l'
+local key_activate = '<cr>'
+local key_back = '<bs>'
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -91,18 +62,16 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+--  For more options, you can see `:help option-list
 
--- Make line numbers default
 vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
+vim.o.wrap = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -145,7 +114,7 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', precedes = '←', extends = '→' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -177,7 +146,14 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
+vim.keymap.set('t', '<C-q>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('i', 'jj', '<Esc>', { desc = 'Exit insert mode' })
+vim.keymap.set('t', 'jj', '<C-\\><C-n>', { desc = 'Exit insert mode' })
+
+-- My custom keybinds
+vim.keymap.set('i', '<C-s>', '<Esc>:w<cr>', { desc = 'Save file and exit insert mode' })
+vim.keymap.set('n', '<C-s>', ':w<cr>', { desc = 'Save file' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -189,10 +165,13 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-' .. key_left .. '>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-' .. key_right .. '>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-' .. key_down .. '>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-' .. key_up .. '>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- my own shortcuts
+-- vim.keymap.set('n', '<C-t>', '<C-t>', { desc = 'Launch terminal' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -583,7 +562,28 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+
+          --local out = ''
+          --for k, v in pairs(vim.lsp.protocol) do
+          -- for v2 in pairs(v) do
+          --   out = out .. tostring(v2)
+          -- end
+          --  out = out .. tostring(k) .. '\n' .. tostring(v) .. '\n\n'
+          --end
+
+          --out = out .. vim.lsp.protocol.resolve_capabilities(test123)
+
+          --local dhl = 'DHL\n'
+          --for k, v in ipairs(vim.lsp.protocol.DocumentHighlightKind) do
+          --  dhl = dhl .. k .. ' -- ' .. v .. '\n'
+          --end
+
+          if not vim.lsp.protocol.Methods then
+            print 'Error handling LSP protocol for language'
+            return
+          end
+
+          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -730,6 +730,7 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
+    branch = 'nvim-0.9',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
     keys = {
@@ -965,11 +966,11 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -982,6 +983,54 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    event = 'VimEnter', -- Needed to preload key config
+    opts = {
+      open_mapping = [[<C-t>]],
+    },
+    keys = {
+      {
+        '<leader>s',
+        function()
+          require('toggleterm').send_lines_to_terminal('single_line', true, { args = vim.v.count })
+        end,
+        desc = 'Toggle Toggleterm',
+      },
+    },
+  },
+  {
+    'tools-life/taskwiki',
+    dependencies = {
+      {
+        'vimwiki/vimwiki',
+        branch = 'dev',
+        init = function()
+          -- https://vimdoc.sourceforge.net/htmldoc/eval.html#variables
+          -- https://stackoverflow.com/questions/944229/vim-options-variables-and-converting-between-the-two
+          --
+          local myopts = {}
+          myopts.path = '~/vimwiki/'
+          myopts.syntax = 'markdown'
+          myopts.ext = 'md'
+          -- As documented here: https://github.com/tools-life/taskwiki/pull/264#issuecomment-855435495
+          myopts.listsym_rejected = 'D'
+          myopts.listsyms = ' WSX'
+          myopts.listsyms_propagate = 0
+          -- Setting global options
+          -- let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': 'md'}]
+          -- let g:vimwiki_global_ext = 0
+          vim.g.vimwiki_list = { myopts }
+          vim.g.vimwiki_global_ext = 0
+        end,
+      },
+    },
+    version = '*',
+    init = function()
+      vim.g.taskwiki_markup_syntax = 'markdown'
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
