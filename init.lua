@@ -73,6 +73,8 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.o.wrap = false
 
+vim.g.netrw_browsex_viewer = 'sensible-browser'
+
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
